@@ -9,3 +9,5 @@ allure_report/
 .DS_Store
 .env
 venv/
+geckodriver.exeallure-report/
+allure-results*/

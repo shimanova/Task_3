@@ -1,10 +1,10 @@
 import pytest
-import os
 import requests
 from selenium import webdriver
 from selenium.webdriver.firefox.service import Service as FirefoxService
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.firefox import GeckoDriverManager
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -27,10 +27,7 @@ def driver(browser):
         if browser == "chrome":
             driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
         elif browser == "firefox":
-            # Ручной путь к geckodriver.exe (лежит в корне проекта)
-            gecko_path = os.path.join(os.path.dirname(__file__), "geckodriver.exe")
-            service = FirefoxService(executable_path=gecko_path)
-            driver = webdriver.Firefox(service=service)
+            driver = webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()))
         else:
             raise ValueError(f"Unsupported browser: {browser}")
         driver.maximize_window()
@@ -40,7 +37,6 @@ def driver(browser):
 
 @pytest.fixture
 def auth_driver(driver):
-    """Фикстура для авторизованного пользователя (создание через API)"""
     with allure.step("Создание пользователя через API"):
         payload = {
             "email": TestUser.EMAIL,

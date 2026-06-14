@@ -1,8 +1,6 @@
 from pages.base_page import BasePage
 from locators import ResetPasswordPageLocators
 import allure
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
 
 
 class ResetPasswordPage(BasePage):
@@ -16,8 +14,8 @@ class ResetPasswordPage(BasePage):
     def click_restore_button(self):
         with allure.step("Клик на кнопку 'Восстановить'"):
             self.close_modal_if_exists()
-            element = self.wait.until(EC.element_to_be_clickable(ResetPasswordPageLocators.RESTORE_BUTTON))
-            self.driver.execute_script("arguments[0].click();", element)  # <--- JS-клик
+            self.js_click(ResetPasswordPageLocators.RESTORE_BUTTON)
+            self.wait_for_element_visible(ResetPasswordPageLocators.PASSWORD_INPUT)
 
     def is_password_field_displayed(self):
         with allure.step("Проверка отображения поля ввода пароля"):
@@ -26,10 +24,8 @@ class ResetPasswordPage(BasePage):
     def click_show_password_button(self):
         with allure.step("Клик на кнопку показать/скрыть пароль"):
             self.close_modal_if_exists()
-            element = self.wait.until(EC.element_to_be_clickable(ResetPasswordPageLocators.SHOW_PASSWORD_BUTTON))
-            self.driver.execute_script("arguments[0].click();", element)  # <--- JS-клик
+            self.js_click(ResetPasswordPageLocators.SHOW_PASSWORD_BUTTON)
 
     def is_password_field_active(self):
         with allure.step("Проверка, что поле пароля активно (подсвечено)"):
-            active_field = (By.XPATH, "/html/body/div/div/main/div/form/fieldset[1]/div/div/input")
-            return self.is_element_displayed(active_field)
+            return self.is_element_has_class(ResetPasswordPageLocators.PASSWORD_FIELD_CONTAINER, "input_status_active")
